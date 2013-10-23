@@ -24,13 +24,15 @@ stub_rarefactionData.txt - This file has the number of reads sequenced and how m
 Use this file to make a rarefaction plot where the number of reads sequenced is the x axis and the number of unique reads is the y axis.  For high complexity libraries that are not sequenced to saturation this will form a fairly straight line.  For oversequenced low complexity libraries the line will asymptote at the point where you stop adding new information when you add more reads (i.e. everything is just a PCR duplicate of what you already have -or- you have a very, very small transcriptome sequenced very, very deeply).
 
 
-It dumps a hash map into memory.  It might segment fault if you have more read positions than memory available.
+It dumps a hash map into memory.  It might segment fault if you have more read positions than memory available so make sure you give it enough memory.
 
 *Useage: 
  * ./ComplexityByStartPos -bam /FolderWhereAlignmentIs/myAlignment.bam -out ./output -points 30
  
  -bam Name of the bam file.  Only works for paired end.  I could fix this to do single end. email me if you need it.
+
 -out Name of a stub to be used for the output (e.g. /myFiles/thisSample )
+
 -points How many points you want to sample.  Default is 20.  If you want it to go faster use 10.  If you want a really smooth line use 50. If you are really neurotic use 100.
 
 How it works:
