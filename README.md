@@ -1,17 +1,19 @@
 ComplexityByStartPosition
 =========================
 
-Creates a rarefaction curve to measure complexity in RNA Seq data using start position
+Creates data for a rarefaction curve to measure complexity in RNA Seq data based on unique start positions.  The X axis is the number of reads sequenced and the Y axis is the number of unique start positions.
 
 Developed by: Michele Busby, Computational Biologist
 Broad Technology Labs/MBRD
 Broad Institute 
 10/23/2013
 
-Gets the complexity of a library based on the number of unique start positions that are found as a function of read depth.  
 
 Why would I want to do this?
-This is used mainly as a quality metric to detect libraries with complexity problems and libraries have been over-sequenced. I have used it on RNA Seq libraries though it may be informative for problematic genomic libraries.  For DNA you usually just remove duplicates, though.  For RNA this is problematic because highly expressed RNAs may have true duplicate reads.
+
+This is used mainly as a quality metric to detect libraries with complexity problems arising from too little input or libraries that have been over-sequenced. 
+
+It may be informative for very problematic genomic libraries.  For DNA you usually just remove duplicates.  You cannot really do this for RNA libraries because highly expressed RNAs may have true duplicate reads.  However, if libraries are grossly oversequenced duplicates can wreak havoc on downstream statistics because sampling noise gets magnified.  One solution I have tried is to randomly downsampled bam files to a read depth where samples are still unsaturated.  This actually improves some statistics like correlation between replicates.  But if it is very bad you may need to resequence the libraries.
 
 The output is two files:
 
@@ -19,7 +21,7 @@ stub_counts.txt - each start position and the number of times it showed up.  Chr
 
 stub_rarefactionData.txt - This file has the number of reads sequenced and how many unique reads there are.
 
-Use this one to make a rarefaction plot where the number of reads sequenced is the x axis and the number of unique reads is the y axis.  For high complexity libraries that are not sequenced to saturation this will form a fairly straight line.  For oversequenced low complexity libraries the line will asymptote at the point where you stop adding new information when you add more reads (i.e. everything is just a PCR duplicate of what you already have -or- you have a very, very small transcriptome sequenced very, very deeply).
+Use this file to make a rarefaction plot where the number of reads sequenced is the x axis and the number of unique reads is the y axis.  For high complexity libraries that are not sequenced to saturation this will form a fairly straight line.  For oversequenced low complexity libraries the line will asymptote at the point where you stop adding new information when you add more reads (i.e. everything is just a PCR duplicate of what you already have -or- you have a very, very small transcriptome sequenced very, very deeply).
 
 
 It dumps a hash map into memory.  It might segment fault if you have more read positions than memory available.
