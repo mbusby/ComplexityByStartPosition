@@ -1,4 +1,4 @@
-# ==================================
+=# ==================================
 # define our source and object files
 # ==================================
 
@@ -16,7 +16,7 @@ CXX= g++
 CXXFLAGS= -Wall -O2 
 PROG=  ComplexityByStartPos
 LIBS= -L/FolderWhereBamToolsIs/bamtools/lib -lbamtools -lz
-LDFLAGS = -Wl,-rpath,/FolderWhereBamToolsIs/bamtools/lib
+LDFLAGS = -Wl,-rpath /FolderWhereBamToolsIs/bamtools/lib
 INCLUDES = -I/FolderWhereBamToolsIs/bamtools/include
 
 # ================

@@ -23,6 +23,13 @@ stub_rarefactionData.txt - This file has the number of reads sequenced and how m
 
 Use this file to make a rarefaction plot where the number of reads sequenced is the x axis and the number of unique reads is the y axis.  For high complexity libraries that are not sequenced to saturation this will form a fairly straight line.  For oversequenced low complexity libraries the line will asymptote at the point where you stop adding new information when you add more reads (i.e. everything is just a PCR duplicate of what you already have -or- you have a very, very small transcriptome sequenced very, very deeply).
 
+You have to make the rarefaction plot yourself.  This is easy and can be done in Excel, R, or Matlab. The easiest way is to open your rarefactionData.txt file in Excel and make a scatter plot with connected dots.
+
+Here is a plot that combines the outputs of three rarefactionData.txt files in one plot.  You can see that the bad libraries are much less complex and ran out of information after fewer than a million reads. 
+
+ 
+
+
 
 It dumps a hash map into memory.  It might segment fault if you have more read positions than memory available so make sure you give it enough memory.
 
@@ -47,16 +54,23 @@ Ignores whether they map uniquely or multiply so if you only want unique you hav
 4)	Prints out the rarefaction data file.
 
 
-How to get it to compile:
-If the unix binary does not work for you, you may need to compile it.  This may or may not be a big hassle because you need both Boost and bamtools.
 
-First, though, copy all the files in here to a single directory on your unix server where g++ is installed (it probably is).
+Installation:
+The file ComplexityByStartPos is a 64 bit binary.  This is easiest if it works on your server.  Otherwise you will need to compile it.
+
+How to get it to compile:
+
+Compiling the file may or may not be a big hassle because you need both Boost and bamtools.
+
+First, though, copy all the files in here to a single directory on your unix server.  The server should have g++ is installed (it probably is).
 
 Boost
 
 You need the Boost C++ library to throw a binomial random number. If it is not already installed try downloading it here: http://www.boost.org/
 
-I did not have to install it but you need to install it and add it to your path so that g++ can find it.  
+I used Boost 1.54.0.
+
+You need to install it and add it to your path so that g++ can find it.  I did have to do this so I cannot offer any guidance.
 If you happen to have use of a Broad server you can get it to use Boost by typing: use .boost-1.54.0
 (Yes, we are very spoiled).
 If you don't know if Boost is installed skip to the next section and see if it breaks.  It is fairly common so it may already be in the install.
@@ -70,5 +84,5 @@ Then, after you install it, you need to edit the Make file in this folder so tha
 
 Compiling
 
-Go to the folder where everything is installed in type "Make".  Ignore the warnings about Handy doing stupid stuff.
-If nothing says Error and it makes an executable called ComplexityByStartPos you're all set.
+Go to the folder where everything is installed in type "make".  Ignore the warnings about Handy doing stupid stuff.
+If nothing says ERROR and it makes an executable called ComplexityByStartPos you should be all set.
