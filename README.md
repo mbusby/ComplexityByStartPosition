@@ -13,7 +13,7 @@ Why would I want to do this?
 
 This is used mainly as a quality metric to detect libraries with complexity problems arising from too little input or libraries that have been over-sequenced. 
 
-It may be informative for very problematic genomic libraries.  For DNA you usually just remove duplicates.  You cannot really do this for RNA libraries because highly expressed RNAs may have true duplicate reads.  However, if libraries are grossly oversequenced duplicates can wreak havoc on downstream statistics because sampling noise gets magnified.  One solution I have tried is to randomly downsampled bam files to a read depth where samples are still unsaturated.  This actually improves some statistics like correlation between replicates.  But if it is very bad you may need to resequence the libraries.
+It may be sometimes informative for very problematic genomic libraries but when working with DNA data you usually just remove duplicates.  You cannot really do this for RNA libraries because highly expressed RNAs may have true duplicate reads.  However, if libraries are grossly oversequenced duplicates can wreak havoc on downstream statistics because sampling noise gets magnified.  One solution I have tried is to randomly downsampled bam files to a read depth where samples are still unsaturated.  This actually improves some statistics like correlation between replicates.  But if it is very bad you may need to resequence the libraries.
 
 The output is two files:
 
@@ -40,7 +40,7 @@ The program works by creating a hash map into memory.  It might segment fault if
 
 
 How it works:
-1)	It makes a hash map of the reads by aligned position (chr_Start1_strand-chr_Start2_strand ) and the count of how many times each read shows up.  I don’t look at the sequence of the read.
+1)	It makes a hash map of the reads by aligned position (chr_Start1_strand-chr_Start2_strand ) and the count of how many times each read shows up.  I donï¿½t look at the sequence of the read.
 
 2)	Iterates through map and prints the read and the number of times it showed up
 
@@ -82,3 +82,7 @@ Compiling
 
 Go to the folder where everything is installed in type "make".  Ignore the warnings about Handy doing stupid stuff.
 If nothing says ERROR and it makes an executable called ComplexityByStartPos you should be all set.
+
+Finding Saturation Point
+
+It would be nice to be able to find the asymptope of the curve to determine where the saturation point it.  I have tried to fit several equations but while Michaelis Menten looks OK for some datasets it is not great for others.  Zipf's does not work.  I was expecting the underlying distribution to be Poisson-lognormal but it is not.  Any suggestions of other equations to try would be appreciated.
