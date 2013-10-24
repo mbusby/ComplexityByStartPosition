@@ -25,13 +25,7 @@ Use this file to make a rarefaction plot where the number of reads sequenced is 
 
 You have to make the rarefaction plot yourself.  This is easy and can be done in Excel, R, or Matlab. The easiest way is to open your rarefactionData.txt file in Excel and make a scatter plot with connected dots.
 
-Here is a plot that combines the outputs of three rarefactionData.txt files in one plot.  You can see that the bad libraries are much less complex and ran out of information after fewer than a million reads. 
-
- 
-
-
-
-It dumps a hash map into memory.  It might segment fault if you have more read positions than memory available so make sure you give it enough memory.
+The file GoodVsBadLibraries.png shows an example a plot that combines the outputs of three rarefactionData.txt files in one plot.  You can see that the bad libraries are much less complex and ran out of information after fewer than a million reads. 
 
 *Useage: 
  * ./ComplexityByStartPos -bam /FolderWhereAlignmentIs/myAlignment.bam -out ./output -points 30
@@ -41,6 +35,9 @@ It dumps a hash map into memory.  It might segment fault if you have more read p
 -out Name of a stub to be used for the output (e.g. /myFiles/thisSample )
 
 -points How many points you want to sample.  Default is 20.  If you want it to go faster use 10.  If you want a really smooth line use 50. If you are really neurotic use 100.
+
+The program works by creating a hash map into memory.  It might segment fault if you have more read positions than memory available so make sure you give it enough memory.
+
 
 How it works:
 1)	It makes a hash map of the reads by aligned position (chr_Start1_strand-chr_Start2_strand ) and the count of how many times each read shows up.  I don’t look at the sequence of the read.
@@ -52,7 +49,6 @@ How it works:
 Ignores whether they map uniquely or multiply so if you only want unique you have to filter your bam file first.
 
 4)	Prints out the rarefaction data file.
-
 
 
 Installation:
