@@ -66,7 +66,7 @@ You need the Boost C++ library to throw a binomial random number. If it is not a
 
 I used Boost 1.54.0.
 
-You need to install it and add it to your path so that g++ can find it.  I did have to do this so I cannot offer any guidance.
+You need to install it and add it to your path so that g++ can find it.  I did not have to do this so I cannot offer any guidance.
 If you happen to have use of a Broad server you can get it to use Boost by typing: use .boost-1.54.0
 (Yes, we are very spoiled).
 If you don't know if Boost is installed skip to the next section and see if it breaks.  It is fairly common so it may already be in the install.
@@ -76,7 +76,7 @@ Bamtools
 To get this to compile you will need to download Derek Barnett's bamtools API and install it in a folder somewhere.
 It is here: https://github.com/pezmaster31/bamtools
 You need the API, not the command line program though is quite useful to have.
-Then, after you install it, you need to edit the Make file in this folder so that everywhere it says "FolderWhereBamToolsIs" you put in the folder where bam tools is located.
+Then, after you install it, you need to edit the Makefile in this folder so that everywhere it says "FolderWhereBamToolsIs" you put in the folder where bamtools is located.
 
 Compiling
 
@@ -85,4 +85,4 @@ If nothing says ERROR and it makes an executable called ComplexityByStartPos you
 
 Finding Saturation Point
 
-It would be nice to be able to find the asymptope of the curve to determine where the saturation point it.  I have tried to fit several equations but while Michaelis Menten looks OK for some datasets it is not great for others.  Zipf's does not work.  I was expecting the underlying distribution to be Poisson-lognormal but it is not.  Any suggestions of other equations to try would be appreciated.
+It would be nice to be able to find the asymptope of the curve programatically to determine where the saturation point is.  I have tried to fit several equations but while Michaelis-Menten looks OK for some datasets it is not great for others.  Zipf's does not work.  I was expecting the underlying distribution to be Poisson-lognormal but it is not.  Any suggestions of other equations to try would be appreciated.
