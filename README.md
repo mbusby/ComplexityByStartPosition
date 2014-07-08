@@ -50,6 +50,18 @@ Ignores whether they map uniquely or multiply so if you only want unique you hav
 
 4)	Prints out the rarefaction data file.
 
+Output columns are defined as follows:
+
+Paired end:
+			Pairs Sequenced = number of first mates found in the bam file (mapped or unmapped)
+			Pairs Aligned = number of mapped first mates found in the bam file which have a mapped mate
+			Unique Alignment Positions = the number of unique positions based on a unique start pos of first and second mate
+			
+Single end:
+			Reads Sequenced = number of reads found in the bam file (mapped or unmapped)
+			Reads Aligned = number of mapped reads in the bam file
+			Unique Alignment Positions = the number of positions where a read aligns
+
 
 Installation:
 The file ComplexityByStartPos is a 64 bit binary.  This is easiest if it works on your server.  Otherwise you will need to compile it.
