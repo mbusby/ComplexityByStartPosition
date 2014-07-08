@@ -2,7 +2,7 @@
 Developed by: Michele Busby, Computational Biologist
 Broad Technology Labs/MBRD
 Broad Institute 
-10/23/2013
+7/02/2014
 
 Gets the complexity of a library based on the number of 
 unique start positions that are found as a function of
@@ -33,6 +33,7 @@ if you have more read positions than memory available.
  	-bam Name of the bam file.  Only works for paired end.  I could fix this to do single end. email me if you need it.
 	-out Name of a stub to be used for the output (e.g. /myFiles/thisSample )
 	-points How many points you want to sample.  Default is 20.  If you want it to go faster use 10.
+	-single_end add if the read is a single end library (default assumes a paired end library)
 
 How it works:
 	Makes a map of reads (chr_Start1_strand-chr_Start2_strand ) and the count of how many times each read shows up
@@ -42,6 +43,19 @@ How it works:
 		Does a downsampling at 20 points using 20 binomial probabilities.  This provides a virtual down sampling. 
 			(i.e. to get the unique reads at 10% you would take each gene and downsample the count by a binomial probability of 0.1)
 		Ignores whether they map uniquely or multiply so if you only want unique you have to filter your bam file first.
+		Accordingly, counts each alignment as a "Read Sequenced." Therefore, if it maps 10 places it counts it as 10 reads. This 
+			is not wonderful but seems internally consistent.
+		More specifically:
+			Paired end:
+			Pairs Sequenced = number of first mates found in the bam file (mapped or unmapped)
+			Pairs Aligned = number of mapped first mates found in the bam file which have a mapped mate
+			Unique Alignment Positions = the number of unique positions based on a unique start pos of first and second mate
+			
+			Single end:
+			Reads Sequenced = number of reads found in the bam file (mapped or unmapped)
+			Reads Aligned = number of mapped reads in the bam file
+			Unique Alignment Positions = the number of positions where a read aligns
+			
 	
 	
 How to get it to compile:
@@ -104,14 +118,17 @@ string outFileName="";
 string jobName;
 string outDirName="./";
 unsigned int samplePoints=20;
+bool singleEnd=false;
 
 
 double mapQualCut=0;
 unsigned int totalReads=0;
+unsigned int totalAlignedReads=0;
 
 map<string, int> ctReads;
 
 vector<int>rarReads;
+vector<int>rarAlignedReads;
 vector<int>rarUniqueReads;
 
 using boost::math::binomial_distribution;
@@ -140,7 +157,7 @@ int main(int argc, char* argv[])
 			return 1;
         }
 		
-		else if(optind >=  argc-1)
+		else if(optind >=  argc-1 && sw!="-single_end" )
 		{
 			cerr<<"Your final parameter, "<<sw<<" is missing a value."<<endl;
 			return 1;
@@ -166,7 +183,12 @@ int main(int argc, char* argv[])
 			samplePoints = h.getIntFromString(argv[optind]);	
 			optind++;
         }
-		
+		else if (sw=="-single_end")
+		{	
+            optind++;
+			singleEnd = true;	
+			//does not increment, only one option
+        }
 		else
 		{
 			cerr<<"Main: Unknown parameter:"<<sw<<endl;
@@ -203,7 +225,6 @@ void writeUnique()
 	for(it_type iterator = ctReads.begin(); iterator != ctReads.end(); iterator++) 
 	{
 		outputStream<< iterator->first << "\t"<<iterator->second<<"\n";	
-		totalReads=totalReads+iterator->second; //Count up the total reads as we go through
 	}
 
 }
@@ -216,16 +237,22 @@ void generateRarefaction()
 {	
 	int foundUnique=0;
 	
-	
+	if(ctReads.size()==0)
+	{
+		cout<<"No data available."<<endl;
+		return;
+	}
 	
 	cout<<"Running rarefaction sampling."<<endl;
 	
+	rarAlignedReads.push_back(0);
 	rarReads.push_back(0);
 	rarUniqueReads.push_back(0);
 	
 	for(int i=1; i<samplePoints; ++i)
 	{
 		cout<<"Sampling "<<i<<" of "<<samplePoints<<endl;
+		
 		foundUnique=0;
 		const double success_fraction = double(i)/double(samplePoints); 
 		
@@ -240,20 +267,21 @@ void generateRarefaction()
                                     // see random number distributions
 			int x = rndBinomial(rng);   
 			
-			//cout<<iterator->second<<" "<<success_fraction<<" "<<x<<" "<<foundUnique<<endl;
-			
 			if(x>0)
 			{
 				++foundUnique;
 			}
 		}	
 		
+		rarAlignedReads.push_back(int(totalAlignedReads*success_fraction));
 		rarReads.push_back(int(totalReads*success_fraction));
 		rarUniqueReads.push_back(foundUnique);
 	}
 	
 	rarReads.push_back(totalReads);
+	rarAlignedReads.push_back(totalAlignedReads);
 	rarUniqueReads.push_back(ctReads.size());
+	
 	
 
 }
@@ -269,13 +297,23 @@ void writeRarefaction()
 	string outFileRarefactionName=outFileName+"_rarefactionData.txt";
 	outputStream.open(outFileRarefactionName.c_str());
 	
-	outputStream<< "Bam file: " << bamFileName<<endl;		
-	outputStream<< "Reads Sequenced" << "\t"<<"Unique Reads Found"<<endl;		
+	outputStream<< "Bam file: " << bamFileName<<endl;
+	
+	
+		
+	if(singleEnd==true)
+	{
+		outputStream<< "Pairs Sequenced" << "\t"<<"Pairs Aligned" << "\t"<<"Unique Alignment Positions"<<endl;		
+	}
+	else
+	{
+		outputStream<< "Reads Sequenced" << "\t"<<"Reads Aligned" << "\t"<<"Unique Alignment Positions"<<endl;	
+	}
 	
 	
 	for(int i=0; i<rarReads.size(); ++i)
 	{
-		outputStream<< rarReads[i]<<"\t"<< rarUniqueReads[i]<<endl;
+		outputStream<< rarReads[i]<<"\t"<< rarAlignedReads[i]<<"\t"<<rarUniqueReads[i]<<endl;
 	}
 }
 
@@ -291,7 +329,7 @@ void countUnique()
 	
 	if ( !reader.Open(bamFileName) ) 
 	{
-		cerr << "Could not open input BAM file." << endl;
+		cerr << "ERROR: Could not open input BAM file " <<bamFileName<< endl;
 		return;
 	}
 	
@@ -299,22 +337,45 @@ void countUnique()
 		
 	while(reader.GetNextAlignment(al))
 	{	
-		++i;		
+		++i;	
+		if (al.IsFirstMate()==true)
+		{
+			++totalReads;
+		}
+		
 		if(i%1000000==0)
 		{
 			cout<<"Reading line "<<i<<" of alignment for position map."<<endl;
 		}
 		
-		if (al.IsFirstMate()==true  && al.IsMateMapped()==true)
-		{
-			string uniqueMap = 	h.getStringFromInt(al.RefID) + "-" + h.getStringFromInt(al.Position) + "-" + 
-					h.getStringFromBool(al.IsReverseStrand())+"|"+ 
-					h.getStringFromInt(al.MateRefID) + "-" + h.getStringFromInt(al.MatePosition) + "-" + 
-					h.getStringFromBool(al.IsMateReverseStrand());
+		if(singleEnd==true)
+		{	
 			
-			++ctReads[uniqueMap];	
-		}					
+			if (al.IsMateMapped()==true)
+			{
+				string uniqueMap = 	h.getStringFromInt(al.RefID) + "-" + h.getStringFromInt(al.Position) + "-" + 
+						h.getStringFromBool(al.IsReverseStrand());				
+				++ctReads[uniqueMap];	
+				++totalAlignedReads;
+			}
+		}
+		else
+		{
+			if (al.IsFirstMate()==true  && al.IsMateMapped()==true)
+			{
+				string uniqueMap = 	h.getStringFromInt(al.RefID) + "-" + h.getStringFromInt(al.Position) + "-" + 
+						h.getStringFromBool(al.IsReverseStrand())+"|"+ 
+						h.getStringFromInt(al.MateRefID) + "-" + h.getStringFromInt(al.MatePosition) + "-" + 
+						h.getStringFromBool(al.IsMateReverseStrand());
+				
+				++ctReads[uniqueMap];	
+				++totalAlignedReads;
+			}
+		}
 	}
+	
+	cout<<"Total Pairs: "<<totalReads<<endl;
+	cout<<"Total Aligned Pairs: "<<totalAlignedReads<<endl;
 	
 	reader.Close();
 }
@@ -362,6 +423,7 @@ void displayHelp()
 	cout<<"-bam Name of the bam file\n";
 	cout<<"-out Name of a stub to be used for the output (e.g. /myFiles/thisSample \n";
 	cout<<"Optional options:\n";
+	cout<<"-single_end Use for libraries which are single end (default is paired end)\n";
 	cout<<"-points How many points you want to sample.  Default is 20.  If you want it to go faster use 10.  ";
 	cout<<"If you want it to make a smooth line use 50. \n";
 
