@@ -303,11 +303,11 @@ void writeRarefaction()
 		
 	if(singleEnd==true)
 	{
-		outputStream<< "Pairs Sequenced" << "\t"<<"Pairs Aligned" << "\t"<<"Unique Alignment Positions"<<endl;		
+		outputStream<< "Reads Sequenced" << "\t"<<"Reads Aligned" << "\t"<<"Unique Alignment Positions"<<endl;
 	}
 	else
 	{
-		outputStream<< "Reads Sequenced" << "\t"<<"Reads Aligned" << "\t"<<"Unique Alignment Positions"<<endl;	
+		outputStream<< "Pairs Sequenced" << "\t"<<"Pairs Aligned" << "\t"<<"Unique Alignment Positions"<<endl;		
 	}
 	
 	
