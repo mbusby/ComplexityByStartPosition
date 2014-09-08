@@ -97,4 +97,7 @@ If nothing says ERROR and it makes an executable called ComplexityByStartPos you
 
 Finding Saturation Point
 
-It would be nice to be able to find the asymptope of the curve programatically to determine where the saturation point is.  I have tried to fit several equations but while Michaelis-Menten looks OK for some datasets it is not great for others.  Zipf's does not work.  I was expecting the underlying distribution to be Poisson-lognormal but it is not.  Any suggestions of other equations to try would be appreciated.
+It would be nice to be able to find the asymptope of the curve programatically to determine where the saturation point is.  I have tried to fit several equations but while Michaelis-Menten looks OK for some datasets it is not great for others.  Zipf's does not work.  I was expecting the underlying distribution to be Poisson-lognormal but it is not.  
+
+I found this after posting this http://www.nature.com/nmeth/journal/v10/n4/full/nmeth.2375.html
+This is a package with a similar function.  They say they can find the saturation point but I haven't tried it myself.
