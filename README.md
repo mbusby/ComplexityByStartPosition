@@ -78,11 +78,16 @@ Boost
 
 You need the Boost C++ library to throw a binomial random number. If it is not already installed try downloading it here: http://www.boost.org/
 
-I used Boost 1.54.0.
+I used Boost 1.54.0 and 1.62.0.
 
-You need to install it and add it to your path so that g++ can find it.  I did not have to do this so I cannot offer any guidance.
+You need to install it and either add it to your path so that g++ can find it or add it to the pathes of includes.
+e.g. if you are on Amazon cloud you may add something like the line:
+-I/home/ec2-user/Software/boost_1_62_0
+
 If you happen to have use of a Broad server you can get it to use Boost by typing: use .boost-1.54.0
-(Yes, we are very spoiled).
+(Yes, they are very spoiled).
+If you have it in your path you probably don't need it in your paths of includes.
+
 If you don't know if Boost is installed skip to the next section and see if it breaks.  It is fairly common so it may already be in the install.
 
 Bamtools
