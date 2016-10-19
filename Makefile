@@ -17,7 +17,8 @@ CXXFLAGS= -Wall -O2
 PROG=  ComplexityByStartPos
 LIBS= -L/FolderWhereBamToolsIs/lib -lbamtools -lz
 LDFLAGS = -Wl,-rpath /FolderWhereBamToolsIs/lib
-INCLUDES = -I/FolderWhereBamToolsIs/include
+INCLUDES = -I/FolderWhereBamToolsIs/include -I/FolderWhereBoostIs
+
 
 # ================
 # build targets
