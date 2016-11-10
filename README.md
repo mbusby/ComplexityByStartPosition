@@ -80,7 +80,7 @@ You need the Boost C++ library to throw a binomial random number. If it is not a
 
 I used Boost 1.54.0 and 1.62.0.
 
-You need to install it and either add it to your path so that g++ can find it or add it to the pathes of includes.
+You need to unpack it to a folder and either add it to your path so that g++ can find it or add it to the pathes of includes.
 e.g. if you are on Amazon cloud you may add something like the line:
 -I/home/ec2-user/Software/boost_1_62_0
 
