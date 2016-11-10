@@ -112,3 +112,6 @@ This is a package with a similar function.  They say they can find the saturatio
 Citing
 
 If you use this and want to cite something please cite Chris Matranga's Lassa and Ebola paper.  http://www.genomebiology.com/2014/15/11/519 
+
+License:
+Do whatever you want.
