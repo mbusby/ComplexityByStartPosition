@@ -30,8 +30,8 @@ The file GoodVsBadLibraries.png shows an example a plot that combines the output
 *Useage: 
  * ./ComplexityByStartPos -bam /FolderWhereAlignmentIs/myAlignment.bam -out ./output -points 30
  
- -bam Name of the bam file.  Only works for paired end.  I could fix this to do single end. email me if you need it.
-
+ -bam Name of the bam file.  
+ 
 -out Name of a stub to be used for the output (e.g. /myFiles/thisSample )
 
 -points How many points you want to sample.  Default is 20.  If you want it to go faster use 10.  If you want a really smooth line use 50. If you are really neurotic use 100.
